@@ -5,7 +5,7 @@ from collections import defaultdict
 def get_period(start_date: date, days: int) -> dict:
     result = {}
     for _ in range(days+1):
-        result[start_date.day, start_date.month] = start_date.year
+        result[start_date.month, start_date.day] = start_date.year
         start_date += timedelta(1)
     return result
 
@@ -18,19 +18,19 @@ def get_birthdays_per_week(users: list) -> dict or None:
     period = get_period(start_date, 7)
     for i in users:
         bd: date = i["birthday"]
-        date_bd = (bd.day, bd.month)
+        date_bd = (bd.month, bd.day)
         if date_bd in period.keys():
-            if period[date_bd] == start_date.year:
-                result_date = date(period[date_bd], date_bd[1], date_bd[0])
-                if result_date.isoweekday() in (6, 7):
-                    result["Monday"].append(i["name"])
-                else:
-                    result[result_date.strftime('%A')].append(i["name"])
-    if result:
-        return result
-    else:
-        return {}
-
+            this_year_bd = datetime(period[date_bd], *date_bd).date()
+            # if period[date_bd] == start_date.year:
+            #     result_date = date(period[date_bd], date_bd[1], date_bd[0])
+            if this_year_bd.isoweekday() in (6, 7):
+                result["Monday"].append(i["name"])
+            else:
+                result[this_year_bd.strftime('%A')].append(i["name"])
+    # if result:
+    #     return result
+    # else:
+    return result
 
 if __name__ == "__main__":
     users = [
