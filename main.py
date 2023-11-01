@@ -10,15 +10,15 @@ def get_period(start_date: date, days: int) -> dict:
     return result
 
 
-def get_birthdays_per_week(users) -> dict or None:
+def get_birthdays_per_week(users: list) -> dict or None:
     if not users:
-        return None
+        return {}
     result = defaultdict(list)
     start_date = date.today()
     period = get_period(start_date, 7)
     for i in users:
-        bd = i["birthday"]
-        date_bd = (bd.month, bd.day)
+        bd: date = i["birthday"]
+        date_bd = (bd.day, bd.month)
         if date_bd in period.keys():
             if period[date_bd] == start_date.year:
                 result_date = date(period[date_bd], date_bd[1], date_bd[0])
@@ -26,7 +26,10 @@ def get_birthdays_per_week(users) -> dict or None:
                     result["Monday"].append(i["name"])
                 else:
                     result[result_date.strftime('%A')].append(i["name"])
-    return result
+    if result:
+        return result
+    else:
+        return {}
 
 
 if __name__ == "__main__":
